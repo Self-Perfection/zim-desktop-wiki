@@ -271,9 +271,9 @@ class StatusIconTrayIcon(TrayIconBase, Gtk.StatusIcon):
 			self.set_from_file(icon)
 
 		self.set_tooltip_text(_('Zim Desktop Wiki')) # T: tooltip for tray icon
-		self.connect('popup-menu', self.__class__.do_popup_menu)
 
 	def do_activate(self):
+		# Default handler for the "activate" signal of Gtk.StatusIcon
 		open_notebooks = list(self.list_open_notebooks())
 		if len(open_notebooks) == 0:
 			# No open notebooks, open default or prompt full list
@@ -296,7 +296,9 @@ class StatusIconTrayIcon(TrayIconBase, Gtk.StatusIcon):
 		menu.popup(None, None, None, self, button, activate_time)
 
 	def do_popup_menu(self, button=3, activate_time=0):
-		#~ print('>>', button, activate_time)
+		# Default handler for the "popup-menu" signal of Gtk.StatusIcon
+		# Do *not* connect this method to the signal as well, that would
+		# result in the menu being popped up twice per click
 		menu = self.get_trayicon_menu()
 		menu.show_all()
 		menu.popup(None, None, None, self, button, activate_time)
