@@ -110,10 +110,7 @@ This is a core plugin shipping with zim.
 	def on_preferences_changed(self, preferences):
 		if GLOBAL_TRAYICON:
 			# Only refresh once someone else loaded it
-			application = GLOBAL_TRAYICON.get_application() if hasattr(GLOBAL_TRAYICON, 'get_application') else None
-			trayicon = set_global_trayicon(self.preferences['classic'])
-			if trayicon and application:
-				application.add_window(trayicon)
+			set_global_trayicon(self.preferences['classic'])
 
 
 class TrayIconMainWindowExtension(MainWindowExtension):
@@ -121,10 +118,7 @@ class TrayIconMainWindowExtension(MainWindowExtension):
 	def __init__(self, plugin, window):
 		MainWindowExtension.__init__(self, plugin, window)
 		self.window.hideonclose = True
-		icon = set_global_trayicon(plugin.preferences['classic'])
-		application = window.get_application()
-		if application:
-			application.add_window(icon)
+		set_global_trayicon(plugin.preferences['classic'])
 
 	def teardown(self):
 		global GLOBAL_TRAYICON
