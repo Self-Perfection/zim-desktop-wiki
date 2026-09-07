@@ -15,16 +15,30 @@ from zim.notebook import get_notebook_list, NotebookInfo, NotebookInfoList
 
 from zim.gui.mainwindow import MainWindowExtension
 
-# Try if we are on Ubunutu with app-indicator support
-try:
-	import gi
-	gi.require_version('AppIndicator3', '0.1')
-	from gi.repository import AppIndicator3 as AppIndicator
-except:
-	AppIndicator = None
-
-
 logger = logging.getLogger('zim.plugins.trayicon')
+
+
+# Try if there is app-indicator support. The original "AppIndicator3" from
+# Ubuntu is no longer maintained and has been dropped by several distributions
+# in favor of the "AyatanaAppIndicator3" fork, so try that one first.
+def _import_appindicator():
+	import gi
+	import importlib
+
+	for namespace in ('AyatanaAppIndicator3', 'AppIndicator3'):
+		try:
+			gi.require_version(namespace, '0.1')
+			module = importlib.import_module('gi.repository.' + namespace)
+		except (ImportError, ValueError) as error:
+			logger.debug('No app-indicator support for "%s": %s', namespace, error)
+		else:
+			logger.debug('Using app-indicator support from "%s"', namespace)
+			return module
+
+	return None
+
+
+AppIndicator = _import_appindicator()
 
 
 
@@ -86,7 +100,7 @@ This is a core plugin shipping with zim.
 	@classmethod
 	def check_dependencies(klass):
 		return (True, [
-			('Unity appindicator', bool(AppIndicator), False),
+			('Application indicator (ayatana or unity)', bool(AppIndicator), False),
 		])
 
 	def __init__(self):
