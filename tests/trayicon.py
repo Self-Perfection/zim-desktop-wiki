@@ -1,6 +1,8 @@
 # Copyright 2026 Self-Perfection <alexander.s.m@gmail.com>
 
 
+import sys
+
 from gi.repository import Gtk
 
 import tests
@@ -12,6 +14,7 @@ import zim.plugins.trayicon
 from zim.plugins.trayicon import StatusIconTrayIcon, TrayIconPlugin, TrayIconMainWindowExtension
 
 
+@tests.skipIf(sys.platform == 'darwin', 'Gtk.StatusIcon crashes the test process on macOS')
 class TestStatusIconTrayIcon(tests.TestCase):
 
 	def runTest(self):
@@ -34,6 +37,7 @@ class TestStatusIconTrayIcon(tests.TestCase):
 		icon.destroy()
 
 
+@tests.skipIf(sys.platform == 'darwin', 'Gtk.StatusIcon crashes the test process on macOS')
 class TestTrayIconMainWindowExtension(tests.TestCase):
 
 	def runTest(self):
